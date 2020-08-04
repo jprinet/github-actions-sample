@@ -16,9 +16,9 @@ jobs:
         run: |
           # Ping the server
           curl -fL https://getcli.jfrog.io | sh
-          ./jfrog rt c jerome-gcp --interactive=false --url=http://artifactory-jerome.soleng-emea-staging.jfrog.team/artifactory --user=admin --apikey=AKCp5fUDyJeXLhFUXrnuziS7w9BEe1QUsbePsr5WLBQerXcFHwq71NYoEAbrsWQ6265hPxo5C
+          ./jfrog rt c jerome-gcp --interactive=false --url=http://$ARTIFACTORY_HOSTNAME/artifactory --user=admin --apikey=$ARTIFACTORY_API_KEY
           ./jfrog rt ping
           ./jfrog rt gradle-config --server-id-resolve=jerome-gcp --server-id-deploy=jerome-gcp --repo-resolve=jerome-mvn-dev --repo-deploy=jerome-mvn-dev --use-wrapper=true
           ./jfrog rt gradle build artifactoryPublish -Dorg.gradle.daemon=false --build-name=pipelines-github-actions --build-number=42
-          ./jfrog rt bp pipelines-github-actions 42
-          ./jfrog rt bs pipelines-github-actions 42
+          ./jfrog rt bp pipelines-github-actions $GITHUB_RUN_NUMBER
+          ./jfrog rt bs pipelines-github-actions $GITHUB_RUN_NUMBER
