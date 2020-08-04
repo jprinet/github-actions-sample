@@ -25,6 +25,7 @@ jobs:
           ./jfrog rt bce pipelines-github-actions $GITHUB_RUN_NUMBER
           ./jfrog rt gradle build artifactoryPublish -Dorg.gradle.daemon=false --build-name=pipelines-github-actions --build-number=$GITHUB_RUN_NUMBER
           ./jfrog rt bp pipelines-github-actions $GITHUB_RUN_NUMBER
-          ./jfrog rt bpr pipelines-github-actions $GITHUB_RUN_NUMBER jerome-mvn-int-local
+          RANDOM_NUMBER=`shuf -i 1-100 -n 1`
+          ./jfrog rt bpr pipelines-github-actions $GITHUB_RUN_NUMBER jerome-mvn-int-local --props "stage=INT;nbTests=${RANDOM_NUMBER}"
 
 
