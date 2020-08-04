@@ -13,12 +13,18 @@ jobs:
         with:
           java-version: 1.8
       - name: Build with JFrog CLI
+        env:
+          ARTIFACTORY_HOSTNAME: ${{ secrets.ARTIFACTORY_HOSTNAME }}
+          ARTIFACTORY_API_KEY: ${{ secrets.ARTIFACTORY_API_KEY }}
         run: |
           # Ping the server
           curl -fL https://getcli.jfrog.io | sh
-          ./jfrog rt c jerome-gcp --interactive=false --url=http://$ARTIFACTORY_HOSTNAME/artifactory --user=admin --apikey=$ARTIFACTORY_API_KEY
+          ./jfrog rt c jerome-artifactory --interactive=false --url=http://${ARTIFACTORY_HOSTNAME}/artifactory --user=admin --apikey=${ARTIFACTORY_API_KEY}
           ./jfrog rt ping
-          ./jfrog rt gradle-config --server-id-resolve=jerome-gcp --server-id-deploy=jerome-gcp --repo-resolve=jerome-mvn-dev --repo-deploy=jerome-mvn-dev --use-wrapper=true
-          ./jfrog rt gradle build artifactoryPublish -Dorg.gradle.daemon=false --build-name=pipelines-github-actions --build-number=42
+          ./jfrog rt gradle-config --server-id-resolve=jerome-artifactory --server-id-deploy=jerome-artifactory --repo-resolve=jerome-mvn-dev --repo-deploy=jerome-mvn-dev --use-wrapper=true
+          ./jfrog rt bce pipelines-github-actions $GITHUB_RUN_NUMBER
+          ./jfrog rt gradle build artifactoryPublish -Dorg.gradle.daemon=false --build-name=pipelines-github-actions --build-number=$GITHUB_RUN_NUMBER
           ./jfrog rt bp pipelines-github-actions $GITHUB_RUN_NUMBER
-          ./jfrog rt bs pipelines-github-actions $GITHUB_RUN_NUMBER
+          ./jfrog rt bpr pipelines-github-actions $GITHUB_RUN_NUMBER jerome-mvn-int-local
+
+
